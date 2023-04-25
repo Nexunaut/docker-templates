@@ -8,14 +8,14 @@ services:
       - PGID=1000
       - TZ=TZ=America/Los_Angeles
     volumes:
-      - portainer_data/sonarr:/config
-      - portainer_data/tvseries:/tv
-      - portainer_data/downloadclient-downloads:/downloads
+      - truenasData/sonarr:/config
+      - truenasData/tvseries:/tv
+      - truenasData/downloadclient-downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
 
 volumes:
-  portainer_data:
+  truenasData:
     name: truenasData
     external: true
