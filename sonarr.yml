@@ -6,11 +6,11 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Etc/UTC
+      - TZ=TZ=America/Los_Angeles
     volumes:
       - portainer_data/sonarr:/config
-      - portainer_data/sonarr:/tv
-      - portainer_data/sonarr:/downloads
+      - portainer_data/tvseries:/tv
+      - portainer_data/downloadclient-downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
