@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "80:80/tcp"
+    environment:
+      TZ: 'America/Los_Angeles'
+      # WEBPASSWORD: 'set a secure password here or it will be random'
+      DHCP_ACTIVE: 'false'
+      PIHOLE_DOMAIN: 'earlham.local'
+      TEMPERATUREUNIT: 'f'
+    volumes:
+      - '/home/docker/pihole/etc-pihole:/etc/pihole'
+      - '/home/docker/pihole/etc-dnsmasq.d:/etc/dnsmasq.d'
+    restart: unless-stopped
