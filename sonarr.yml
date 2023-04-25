@@ -8,14 +8,17 @@ services:
       - PGID=1000
       - TZ=TZ=America/Los_Angeles
     volumes:
-      - truenasData/sonarr:/config
-      - truenasData/tvseries:/tv
-      - truenasData/downloadclient-downloads:/downloads
+      - nfs-sonarr:/config
+      #- nfs-sonarrtv:/tv
+      #- nfs-sonarr/downloadclient-downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
 
 volumes:
-  truenasData:
-    name: truenasData
-    external: true
+  nfs-sonarr:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      device: ":/mnt/pool-600gb/share/portainer-data/sonarr"
+      
