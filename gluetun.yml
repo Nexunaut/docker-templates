@@ -1,1 +1,15 @@
 
+version: "3"
+services:
+  gluetun:
+    image: qmcgaw/gluetun
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=<KEY>
+      - WIREGUARD_ADDRESSES=10.66.170.8/32
+      - SERVER_COUNTRIES=Sweden
+      - SERVER_CITIES=Stockholm
+      - VPN_ENDPOINT_PORT=51820
