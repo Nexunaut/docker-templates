@@ -1,0 +1,33 @@
+version: "2.1"
+services:
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - nfs-sabnzbd:/config
+      - nfs-downloads:/downloads #optional
+      - nfs-incomplete-downloads:/incomplete-downloads #optional
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+
+volumes:
+  nfs-sabnzbd:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/data"
+  nfs-downloads:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      device: ":/mnt/pool-600gb/share/portainer-data/downloads"
+  nfs-incomplete-downloads:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      device: ":/mnt/pool-600gb/share/portainer-data/downloads/incomplete"
