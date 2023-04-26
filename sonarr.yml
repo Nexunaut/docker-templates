@@ -10,7 +10,7 @@ services:
     volumes:
       - nfs-sonarr:/config
       - nfs-plextv:/tv
-      #- nfs-sonarr/downloadclient-downloads:/downloads
+      - nfs-downloads:/downloads
     ports:
       - 8989:8989
     restart: unless-stopped
@@ -27,3 +27,9 @@ volumes:
       type: "nfs"
       o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
       device: ":/mnt/pool-600gb/plex-media/Plex-TV"
+
+  nfs-downloads:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      device: ":/mnt/pool-600gb/share/portainer-data/sonarr/downloads"
