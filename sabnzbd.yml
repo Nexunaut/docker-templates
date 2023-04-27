@@ -12,7 +12,7 @@ services:
       - nfs-downloads:/downloads #optional
       - nfs-incomplete-downloads:/incomplete-downloads #optional
     ports:
-      - 8080:8080
+      - 8081:8080
     restart: unless-stopped
     network_mode: gluetun_default
     
@@ -20,15 +20,15 @@ volumes:
   nfs-sabnzbd:
     driver_opts:
       type: "nfs"
-      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
       device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/data"
   nfs-downloads:
     driver_opts:
       type: "nfs"
-      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
-      device: ":/mnt/pool-600gb/share/portainer-data/downloads"
+      o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
+      device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/downloads"
   nfs-incomplete-downloads:
     driver_opts:
       type: "nfs"
-      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
-      device: ":/mnt/pool-600gb/share/portainer-data/downloads/incomplete"
+      o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
+      device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/downloads/incomplete"
