@@ -8,27 +8,10 @@ services:
       - PGID=1000
       - TZ=America/Los_Angeles
     volumes:
-      - nfs-sabnzbd:/config
-      - nfs-downloads:/downloads #optional
-      - nfs-incomplete-downloads:/incomplete-downloads #optional
+      - /var/tndata/sabnzbd:/config
+      - /var/tndata/sabnzbd/downloads:/downloads #optional
+      - /var/tndata/sabnzbd/downloads/incomplete:/incomplete-downloads #optional
     ports:
-      - 8081:8080
+      - 8080:8080
     restart: unless-stopped
-    network_mode: gluetun_default
-    
-volumes:
-  nfs-sabnzbd:
-    driver_opts:
-      type: "nfs"
-      o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
-      device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/data"
-  nfs-downloads:
-    driver_opts:
-      type: "nfs"
-      o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
-      device: ":/mnt/pool-600gb/share/portainer-data/downloads"
-  nfs-incomplete-downloads:
-    driver_opts:
-      type: "nfs"
-      o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
-      device: ":/mnt/pool-600gb/share/portainer-data/downloads/incomplete"
+    network_mode: bridge
