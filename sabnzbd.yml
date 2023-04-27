@@ -26,9 +26,9 @@ volumes:
     driver_opts:
       type: "nfs"
       o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
-      device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/downloads"
+      device: ":/mnt/pool-600gb/share/portainer-data/downloads"
   nfs-incomplete-downloads:
     driver_opts:
       type: "nfs"
       o: "addr=192.168.2.5,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14"
-      device: ":/mnt/pool-600gb/share/portainer-data/sabnzbd/downloads/incomplete"
+      device: ":/mnt/pool-600gb/share/portainer-data/downloads/incomplete"
