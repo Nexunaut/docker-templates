@@ -1,0 +1,23 @@
+---
+version: "2.1"
+services:
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - nfs-prowlarr:/config
+    ports:
+      - 9696:9696
+    restart: unless-stopped
+    network_mode: bridge
+
+volumes:
+  nfs-prowlarr:
+    driver_opts:
+      type: "nfs"
+      o: "addr=192.168.2.5,nolock,soft,nfsvers=4"
+      device: ":/mnt/pool-600gb/share/portainer-data/prowlarr"
