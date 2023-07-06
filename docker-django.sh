@@ -40,4 +40,4 @@ source $webpath/venv/bin/activate
 python3 -m pip install django
 
 django-admin startproject dannylint
-python3 $webpath/manage.py migrate
+python3 $webpath/$project_dir/manage.py migrate
