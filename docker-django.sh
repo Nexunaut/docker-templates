@@ -15,4 +15,5 @@ mkdir /home/web
 webpath = "/home/web"
 cd $webpath
 
+#
 python3 -m venv $webpath/venv
