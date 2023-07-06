@@ -23,7 +23,7 @@ fi
 
 cd $webpath
 
-#
+# 
 python3 -m venv $webpath/venv
 
 source $webpath/venv/bin/activate
