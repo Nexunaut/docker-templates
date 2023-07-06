@@ -10,9 +10,17 @@ apt-get install -y python3 python3-pip python3-venv
 python3 --version
 pip3 --version
 
-mkdir /home/web
+webpath="/home/web"
 
-webpath = "/home/web"
+# Check if the directory exists
+if [ ! -d "$webpath" ]; then
+    # Create the directory
+    mkdir "$webpath"
+    echo "Directory created."
+else
+    echo "Directory already exists."
+fi
+
 cd $webpath
 
 #
