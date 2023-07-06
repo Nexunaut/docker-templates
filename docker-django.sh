@@ -4,7 +4,7 @@
 apt-get update
 
 # Install Python 3 and pip
-apt-get install -y python3 python3-pip python3-venv nano
+apt-get install -y python3 python3-pip python3-venv nano python3-dev libpq-dev postgresql postgresql-contrib
 
 # Verify the installation
 python3 --version
