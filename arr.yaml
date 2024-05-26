@@ -1,0 +1,170 @@
+# Docker compose to set up containers for all services you need:
+# VPN
+#   Sonarr, Radarr, Lidarr, Qbittorrent
+# Non-VPN
+#   Plex, get_iplayer
+# Before running docker-compose, you should pre-create all of the following folders.
+# Folders for Docker State:
+#  /volume1/dockerdata.             - root where this docker-compose.yml should live
+#  /volume1/dockerdata/plex         - Plex config and DB
+#  /volume1/dockerdata/sonarr       - Sonarr config and DB
+#  /volume1/dockerdata/radarr       - Radarr config and DB
+#  /volume1/dockerdata/lidarr       - Lidarr config and DB
+#  /volume1/dockerdata/qbt          - QBitorrent config and DB
+#  /volume1/dockerdata/prowlarr     - Prowlarr config and DB
+#  /volume1/dockerdata/get_iplayer  - Get_iPlayer config and DB
+# Folders for Media etc:
+#  /volume1/photo                   - Root storage for photo files
+#  /volume1/music                   - Root storage for music files
+#  /volume1/video                   - Root storage for video files
+#  /volume1/video/TV                - folder for Sonarr/Plex TV shows
+#  /volume1/video/Films             - folder for Radarr/Plex Movies
+#  /volume1/video/Downloads         - QBT folder for TV downloads (that Sonarr will process)
+#  /volume1/video/FilmDownloads     - QBT folder for Movie downloads (that Radarr will process)
+#  /volume1/video/MusicDownloads    - QBT folder for Music downloads (that Lidarr will process)
+#  /volume1/video/Downloads/iPlayer - Destination folder for get_iplayer. See https://github.com/Webreaper/SonarrAutoImport
+# 
+# Note that Sonarr and Radarr don't necessarily need the VPN if you're using Prowlarr for the indexers. 
+# But Prowlarr should be behind the VPN to avoid ISPs that block indexers.
+
+version: "2"
+services:
+    gluetun:
+        image: qmcgaw/gluetun:latest
+        cap_add:
+            - NET_ADMIN
+        environment:
+            - VPN_SERVICE_PROVIDER=mullvad
+            - VPN_TYPE=wireguard
+            - WIREGUARD_PRIVATE_KEY=sHL8nvfCJn8DY1BxkTujzn7s+Vr1dedENJ/gQvp9onY=
+            - WIREGUARD_ADDRESSES=10.66.0.197/32
+            - SERVER_COUNTRIES=Sweden
+            - SERVER_CITIES=Stockholm
+            - VPN_ENDPOINT_PORT=51820
+        volumes:
+            - gluetun:/gluetun
+        ports:
+            # Sonarr port
+            - 8989:8989
+            # Radarr port
+            - 7878:7878
+            # Lidarr port
+            - 8686:8686
+            # Prowlarr port
+            - 9696:9696
+            # Overseerr port
+            - 5055:5055
+            # Sabnzbd port
+            - 8081:8080
+        restart: unless-stopped
+
+    prowlarr:
+        image: linuxserver/prowlarr:latest
+        container_name: prowlarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+        volumes:
+            - prowlarr:/config
+        restart: unless-stopped
+        network_mode: service:gluetun
+        depends_on:
+            - gluetun
+
+    sabnzbd:
+        image: lscr.io/linuxserver/sabnzbd:latest
+        container_name: sabnzbd
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+        volumes:
+            - sabnzbd:/config
+            - /mnt/media/usenet/downloads1:/downloads #optional
+            - /mnt/media/usenet/downloads1/incomplete:/incomplete-downloads #optional
+        restart: unless-stopped
+        network_mode: service:gluetun
+        depends_on:
+            - prowlarr
+
+    sonarr:
+        image: linuxserver/sonarr:latest
+        container_name: sonarr_v3
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - sonarr:/config
+            - /mnt/media/tv:/tv
+            - /mnt/media/usenet/downloads1/tv:/downloads
+        restart: unless-stopped
+        network_mode: service:gluetun
+        depends_on:
+            - prowlarr
+
+    radarr:
+        image: linuxserver/radarr:latest
+        container_name: radarr_v3
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - radarr:/config
+            - /mnt/media/movies:/movies
+            - /mnt/media/usenet/downloads1/movies:/downloads
+        restart: unless-stopped
+        network_mode: service:gluetun
+        depends_on:
+            - prowlarr
+
+    lidarr:
+        image: linuxserver/lidarr
+        container_name: lidarr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+        volumes:
+            - /etc/localtime:/etc/localtime:ro
+            - lidarr:/config
+            - /mnt/media/music:/music
+            - /mnt/media/usenet/downloads1:/downloads
+        restart: unless-stopped
+        network_mode: service:gluetun
+        depends_on:
+            - prowlarr
+
+    overseerr:
+        image: lscr.io/linuxserver/overseerr:latest
+        container_name: overseerr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=America/Los_Angeles
+        volumes:
+            - overseerr:/config
+        restart: unless-stopped
+        network_mode: service:gluetun
+        depends_on:
+            - prowlarr
+
+volumes:
+    gluetun:
+        external: true
+    prowlarr:
+        external: true
+    sabnzbd:
+        external: true
+    sonarr:
+        external: true
+    radarr:
+        external: true
+    lidarr:
+        external: true
+    overseerr:
+        external: true
